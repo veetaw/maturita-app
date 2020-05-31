@@ -9,7 +9,7 @@ class Order extends HiveObject {
   int id;
 
   @HiveField(1)
-  String start;
+  DateTime start;
 
   @HiveField(2)
   bool shipped;
@@ -35,4 +35,14 @@ class Order extends HiveObject {
     this.items,
     this.pizzeriaId,
   });
+
+  Order.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    start = DateTime.parse(json['start']);
+    shipped = json['shipped'];
+    delivered = json['delivered'];
+    total = json['total'].toDouble();
+    if (json['items'] != null) if (json['menu'] != null)
+      items = json['menu'].map((item) => Item.fromJson(item)).toList();
+  }
 }

@@ -7,7 +7,7 @@ enum ItemType { drink, pizza }
 @HiveType(typeId: 0)
 class Item extends HiveObject {
   @HiveField(0)
-  String id;
+  int id;
 
   @HiveField(1)
   String name;
@@ -28,4 +28,38 @@ class Item extends HiveObject {
     this.type,
     this.image,
   });
+
+  Item.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    price = json['price'];
+    type = fromString(json['type']);
+    image = json['image'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['price'] = this.price;
+    data['type'] = type.asString;
+    data['image'] = image;
+    return data;
+  }
+
+  Map<String, dynamic> toJsonSimple() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    return data;
+  }
+}
+
+extension on ItemType {
+  String get asString => this == ItemType.drink ? 'drink' : 'pizza';
+}
+
+ItemType fromString(String str) {
+  if (str.toLowerCase() == 'drink') return ItemType.drink;
+  if (str.toLowerCase() == 'pizza') return ItemType.pizza;
+  throw Exception();
 }

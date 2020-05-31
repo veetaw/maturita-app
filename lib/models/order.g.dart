@@ -18,7 +18,7 @@ class OrderAdapter extends TypeAdapter<Order> {
     };
     return Order(
       id: fields[0] as int,
-      start: fields[1] as String,
+      start: fields[1] as DateTime,
       shipped: fields[2] as bool,
       delivered: fields[3] as bool,
       total: fields[4] as double,

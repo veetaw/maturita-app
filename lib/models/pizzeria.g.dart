@@ -23,13 +23,14 @@ class PizzeriaAdapter extends TypeAdapter<Pizzeria> {
       address: fields[3] as String,
       phone: fields[4] as String,
       profilePicture: (fields[5] as List)?.cast<int>(),
-    );
+      menu: (fields[7] as List)?.cast<Item>(),
+    )..email = fields[6] as String;
   }
 
   @override
   void write(BinaryWriter writer, Pizzeria obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,6 +42,10 @@ class PizzeriaAdapter extends TypeAdapter<Pizzeria> {
       ..writeByte(4)
       ..write(obj.phone)
       ..writeByte(5)
-      ..write(obj.profilePicture);
+      ..write(obj.profilePicture)
+      ..writeByte(6)
+      ..write(obj.email)
+      ..writeByte(7)
+      ..write(obj.menu);
   }
 }

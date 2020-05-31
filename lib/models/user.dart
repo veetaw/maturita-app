@@ -25,9 +25,6 @@ class User extends HiveObject {
   @HiveField(6)
   List<int> profilePicture;
 
-  @HiveField(7)
-  String token;
-
   User({
     this.id,
     this.firstName,
@@ -36,6 +33,29 @@ class User extends HiveObject {
     this.address,
     this.phone,
     this.profilePicture,
-    this.token,
   });
+
+  User.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    firstName = json['firstName'];
+    lastName = json['lastName'];
+    email = json['email'];
+    address = json['address'];
+    phone = json['phone'];
+    profilePicture = json['profile_picture'] != null
+        ? json['profile_picture']['data']
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['firstName'] = this.firstName;
+    data['lastName'] = this.lastName;
+    data['email'] = this.email;
+    data['address'] = this.address;
+    data['phone'] = this.phone;
+    data['profile_picture'] = this.profilePicture;
+    return data;
+  }
 }
