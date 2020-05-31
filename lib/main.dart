@@ -1,6 +1,27 @@
+import 'package:path_provider/path_provider.dart';
+import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
+import 'package:pizza/models/item.dart';
+import 'package:pizza/models/opening.dart';
+import 'package:pizza/models/order.dart';
+import 'package:pizza/models/owner.dart';
+import 'package:pizza/models/pizzeria.dart';
+import 'package:pizza/models/user.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final appDocumentDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+
+  // register hive adapters
+  Hive.registerAdapter<Item>(ItemAdapter());
+  Hive.registerAdapter<Opening>(OpeningAdapter());
+  Hive.registerAdapter<Order>(OrderAdapter());
+  Hive.registerAdapter<Owner>(OwnerAdapter());
+  Hive.registerAdapter<Pizzeria>(PizzeriaAdapter());
+  Hive.registerAdapter<User>(UserAdapter());
+
   runApp(MyApp());
 }
 
