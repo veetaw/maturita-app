@@ -78,7 +78,7 @@ class PizzaApi {
 
   Interceptor getTokenInterceptor(String token) => InterceptorsWrapper(
         onRequest: (RequestOptions options) async {
-          options.headers['authorization'] = "bearer " + token;
+          options.headers['authorization'] = 'bearer ' + token;
           return options;
         },
       );

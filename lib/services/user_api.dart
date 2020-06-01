@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:pizza/models/item.dart';
 import 'package:pizza/models/order.dart';
 import 'package:pizza/models/pizzeria.dart';
@@ -57,8 +56,7 @@ class UserApi extends PizzaApi {
 
   Future<User> info() async {
     const path = '/user/info';
-    Response response = await super.get(path: path);
-    return User.fromJson(response.data);
+    return User.fromJson((await super.get(path: path)).data);
   }
 
   Future<List<Pizzeria>> pizzerie() async {
