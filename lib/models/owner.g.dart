@@ -21,15 +21,14 @@ class OwnerAdapter extends TypeAdapter<Owner> {
       firstName: fields[1] as String,
       lastName: fields[2] as String,
       email: fields[3] as String,
-      token: fields[4] as String,
-      profilePicture: (fields[5] as List)?.cast<int>(),
+      profilePicture: (fields[4] as List)?.cast<int>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Owner obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -39,8 +38,6 @@ class OwnerAdapter extends TypeAdapter<Owner> {
       ..writeByte(3)
       ..write(obj.email)
       ..writeByte(4)
-      ..write(obj.token)
-      ..writeByte(5)
       ..write(obj.profilePicture);
   }
 }

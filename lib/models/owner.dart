@@ -17,9 +17,6 @@ class Owner extends HiveObject {
   String email;
 
   @HiveField(4)
-  String token;
-
-  @HiveField(5)
   List<int> profilePicture;
 
   Owner({
@@ -27,7 +24,16 @@ class Owner extends HiveObject {
     this.firstName,
     this.lastName,
     this.email,
-    this.token,
     this.profilePicture,
   });
+
+  Owner.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    firstName = json['firstName'];
+    lastName = json['lastName'];
+    email = json['email'];
+    profilePicture = json['profile_picture'] != null
+        ? json['profile_picture']['data']
+        : null;
+  }
 }

@@ -18,4 +18,10 @@ class Opening extends HiveObject {
     this.start,
     this.end,
   });
+
+  Opening.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    start = json['start'];
+    end = json['end'];
+  }
 }
