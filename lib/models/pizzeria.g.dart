@@ -8,7 +8,7 @@ part of 'pizzeria.dart';
 
 class PizzeriaAdapter extends TypeAdapter<Pizzeria> {
   @override
-  final typeId = 0;
+  final typeId = 4;
 
   @override
   Pizzeria read(BinaryReader reader) {

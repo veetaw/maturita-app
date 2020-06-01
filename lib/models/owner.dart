@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'owner.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 3)
 class Owner extends HiveObject {
   @HiveField(0)
   int id;

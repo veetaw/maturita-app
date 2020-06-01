@@ -8,7 +8,7 @@ part of 'opening.dart';
 
 class OpeningAdapter extends TypeAdapter<Opening> {
   @override
-  final typeId = 0;
+  final typeId = 1;
 
   @override
   Opening read(BinaryReader reader) {

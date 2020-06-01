@@ -8,7 +8,7 @@ part of 'owner.dart';
 
 class OwnerAdapter extends TypeAdapter<Owner> {
   @override
-  final typeId = 0;
+  final typeId = 3;
 
   @override
   Owner read(BinaryReader reader) {

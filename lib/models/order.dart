@@ -3,7 +3,7 @@ import 'package:pizza/models/item.dart';
 
 part 'order.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 2)
 class Order extends HiveObject {
   @HiveField(0)
   int id;
