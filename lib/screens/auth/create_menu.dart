@@ -75,73 +75,107 @@ class CreateMenu extends StatelessWidget {
       ),
       physics: BouncingScrollPhysics(),
       children: [
-        if (items == null || items.isEmpty) ...[
+        if (items == null || items.isEmpty)
           Text(
             "Attualmente non hai aggiunto prodotti",
             style: TextStyle(
               fontSize: 20,
             ),
           ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              width: constraints.maxWidth / 2,
-              padding: EdgeInsets.only(top: kStandardPadding),
-              child: MaterialButton(
-                height: 50,
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    child: CustomDialog(
-                      constraints: constraints,
-                      api: api,
-                      context: context,
-                    ),
-                  );
-                },
-                color: AppStyles.kPrimaryColor,
-                textColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Center(
-                  child: Text(
-                    "Aggiungi prodotto",
-                    style: TextStyle(
-                      fontSize: 17,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
         for (Item item in items)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: kStandardPadding),
+            padding: const EdgeInsets.only(bottom: kStandardPadding),
             child: Container(
+              height: 100,
               decoration: BoxDecoration(
                 color: AppStyles.kCardColor,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   if (item.image == null)
                     Icon(
                       item.type == ItemType.drink
                           ? Icons.local_drink
                           : Icons.local_pizza,
+                      size: 100,
+                      color: AppStyles.kPrimaryColor,
                     ),
                   if (item.image != null)
                     Image.memory(
                       Uint8List.fromList(item.image),
-                    )
-
-                    
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.fill,
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: kStandardPadding,
+                        vertical: kStandardPadding / 2),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          item.name,
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                color: AppStyles.kPrimaryColor,
+                              ),
+                        ),
+                        Text(
+                          item.price.toString() + '€',
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                color: AppStyles.kPrimaryColor,
+                              ),
+                        ),
+                        Text(
+                          item.type == ItemType.drink ? 'Bevanda' : 'Pizza',
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                color: AppStyles.kPrimaryColor,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            width: constraints.maxWidth / 2,
+            padding: EdgeInsets.only(top: kStandardPadding),
+            child: MaterialButton(
+              height: 50,
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  child: CustomDialog(
+                    constraints: constraints,
+                    api: api,
+                    context: context,
+                  ),
+                );
+              },
+              color: AppStyles.kPrimaryColor,
+              textColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Center(
+                child: Text(
+                  "Aggiungi prodotto",
+                  style: TextStyle(
+                    fontSize: 17,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -168,7 +202,6 @@ class CreateMenu extends StatelessWidget {
         children: [
           buildNextButton(
             () {
-              // TODO: check if owner added at least one item
               Navigator.of(context).pushNamedAndRemoveUntil(
                 OwnerHome.kRouteName,
                 (_) => false,
@@ -200,12 +233,16 @@ class CreateMenu extends StatelessWidget {
           ),
           Expanded(
             flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildItems(constraints, context),
-              ],
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(vertical: kStandardPadding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildItems(constraints, context),
+                ],
+              ),
             ),
           ),
         ],
