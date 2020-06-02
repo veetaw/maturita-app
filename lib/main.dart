@@ -1,12 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:path_provider/path_provider.dart';
 import 'package:hive/hive.dart';
-import 'package:pizza/common/persist_login.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:pizza/router.dart';
-
+import 'package:pizza/common/persist_login_abstract.dart';
 import 'package:pizza/models/item.dart';
 import 'package:pizza/models/opening.dart';
 import 'package:pizza/models/order.dart';
@@ -20,8 +19,7 @@ import 'package:pizza/screens/user/user_home.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final appDocumentDir = await getApplicationDocumentsDirectory();
-  Hive.init(appDocumentDir.path);
+  Hive.initFlutter();
 
   // register hive adapters
   Hive.registerAdapter<Item>(ItemAdapter());
@@ -33,13 +31,10 @@ void main() async {
 
   bool loggedIn;
   bool user;
+  PersistLogin persistLogin = PersistLogin();
 
-  if (kIsWeb) // TODO
-    loggedIn = false;
-  else {
-    loggedIn = await isLoggedIn();
-    user = await isUser();
-  }
+  loggedIn = await persistLogin.isLoggedIn();
+  user = await persistLogin.isUser();
 
   runApp(App(loggedIn: loggedIn, isUser: user));
 }

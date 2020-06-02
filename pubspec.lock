@@ -397,7 +397,7 @@ packages:
     source: hosted
     version: "1.7.0"
   path_provider:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: path_provider
       url: "https://pub.dartlang.org"
