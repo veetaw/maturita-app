@@ -117,6 +117,7 @@ class CreatePizzeria extends StatelessWidget {
           ),
           CustomInputText(
             labelText: "phone",
+            keyboardType: TextInputType.phone,
             prefixIcon: Icon(
               Icons.phone,
               color: AppStyles.kPrimaryColor,
@@ -124,6 +125,7 @@ class CreatePizzeria extends StatelessWidget {
           ),
           CustomInputText(
             labelText: "email",
+            keyboardType: TextInputType.emailAddress,
             prefixIcon: Icon(
               Icons.email,
               color: AppStyles.kPrimaryColor,
