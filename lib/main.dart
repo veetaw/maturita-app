@@ -33,8 +33,11 @@ void main() async {
   bool user;
   PersistLogin persistLogin = PersistLogin();
 
-  loggedIn = await persistLogin.isLoggedIn();
-  user = await persistLogin.isUser();
+  // loggedIn = await persistLogin.isLoggedIn();
+  // user = await persistLogin.isUser();
+  // TODO: debug
+  loggedIn = false;
+  user = null;
 
   runApp(App(loggedIn: loggedIn, isUser: user));
 }

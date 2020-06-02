@@ -3,8 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:pizza/style/app_styles.dart';
 
 class PasswordInputText extends StatefulWidget {
+  final TextEditingController controller;
+
   const PasswordInputText({
     Key key,
+    this.controller,
   }) : super(key: key);
 
   @override
@@ -18,6 +21,7 @@ class _PasswordInputTextState extends State<PasswordInputText> {
   Widget build(BuildContext context) {
     return CustomInputText(
       labelText: "Password",
+      controller: widget.controller,
       prefixIcon: Icon(
         Icons.vpn_key,
         color: AppStyles.kPrimaryColor,
@@ -42,6 +46,7 @@ class CustomInputText extends StatelessWidget {
   final bool obscured;
   final Function(String) validator;
   final List<TextInputFormatter> formatters;
+  final TextInputType keyboardType;
 
   const CustomInputText({
     Key key,
@@ -52,6 +57,7 @@ class CustomInputText extends StatelessWidget {
     this.obscured,
     this.validator,
     this.formatters,
+    this.keyboardType,
   }) : super(key: key);
 
   @override
@@ -65,6 +71,7 @@ class CustomInputText extends StatelessWidget {
         controller: controller,
         validator: validator,
         inputFormatters: formatters,
+        keyboardType: keyboardType,
         obscureText: obscured ?? false,
         decoration: InputDecoration(
           labelText: labelText,

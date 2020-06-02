@@ -160,10 +160,10 @@ class CreateMenu extends StatelessWidget {
           buildNextButton(
             () {
               // TODO: check if owner added at least one item
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              OwnerHome.kRouteName,
-              (_) => false,
-            );
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                OwnerHome.kRouteName,
+                (_) => false,
+              );
             },
             "Fine",
           ),
@@ -258,6 +258,7 @@ class CustomDialog extends StatelessWidget {
                         Container(
                           width: constraints.maxWidth / 3,
                           child: TextFormField(
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               labelText: 'Prezzo',
                               labelStyle: TextStyle(

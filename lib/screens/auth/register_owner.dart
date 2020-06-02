@@ -113,6 +113,7 @@ class RegisterOwner extends StatelessWidget {
           ),
           CustomInputText(
             labelText: "email",
+            keyboardType: TextInputType.emailAddress,
             prefixIcon: Icon(
               Icons.email,
               color: AppStyles.kPrimaryColor,
