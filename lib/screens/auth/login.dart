@@ -135,21 +135,35 @@ class Login extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: kStandardPadding),
                 child: Container(
+                  height: constraints.maxHeight,
+                  width: constraints.maxWidth / 2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: buildTitle(
-                          'Login',
-                          Provider.of<SwitchNotifier>(context).activeIndex == 0
-                              ? 'Utente'
-                              : 'Proprietario',
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: buildTitle(
+                            'Login',
+                            Provider.of<SwitchNotifier>(context).activeIndex ==
+                                    0
+                                ? 'Utente'
+                                : 'Proprietario',
+                          ),
                         ),
                       ),
-                      ..._buildButtons(context, constraints),
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: _buildButtons(context, constraints),
+                        ),
+                      ),
                     ],
                   ),
                 ),
