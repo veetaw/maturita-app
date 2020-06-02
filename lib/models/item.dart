@@ -32,7 +32,7 @@ class Item extends HiveObject {
   Item.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    price = double.tryParse(json['price'].toString());
+    price = json['price'].toDouble();
     type = fromString(json['type']);
     image = json['image'];
   }
