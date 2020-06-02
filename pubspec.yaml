@@ -29,6 +29,9 @@ dependencies:
   flutter_secure_storage: ^3.3.3
   provider: ^4.1.2
   path_provider: ^1.6.9
+  cross_picker:
+    git:
+      url: https://github.com/pspgt/cross_picker.git
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

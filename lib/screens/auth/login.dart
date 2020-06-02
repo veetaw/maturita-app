@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pizza/common/persist_login_abstract.dart';
-import 'package:pizza/common/validate_email.dart';
+import 'package:pizza/common/validate_text.dart';
 import 'package:pizza/common/widget/custom_input_text.dart';
 import 'package:pizza/common/widget/custom_switch.dart';
 import 'package:pizza/screens/auth/common.dart';
@@ -13,9 +13,9 @@ import 'package:pizza/services/user_api.dart';
 import 'package:pizza/style/app_styles.dart';
 import 'package:provider/provider.dart';
 
-final GlobalKey<FormState> formKey = GlobalKey();
-final TextEditingController emailController = TextEditingController();
-final TextEditingController passwordController = TextEditingController();
+final GlobalKey<FormState> _formKey = GlobalKey();
+final TextEditingController _emailController = TextEditingController();
+final TextEditingController _passwordController = TextEditingController();
 
 class Login extends StatelessWidget {
   static const String kRouteName = 'login';
@@ -29,7 +29,7 @@ class Login extends StatelessWidget {
         child: ChangeNotifierProvider<SwitchNotifier>(
           create: (_) => SwitchNotifier(),
           child: Form(
-            key: formKey,
+            key: _formKey,
             autovalidate: true,
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -137,20 +137,20 @@ class Login extends StatelessWidget {
           );
         }
 
-        if (formKey.currentState.validate()) {
+        if (_formKey.currentState.validate()) {
           if (activeIndex == 0) {
             UserApi()
                 .login(
-                  email: emailController.text,
-                  password: passwordController.text,
+                  email: _emailController.text,
+                  password: _passwordController.text,
                 )
                 .then(success)
                 .catchError(error);
           } else {
             OwnerApi()
                 .login(
-                  email: emailController.text,
-                  password: passwordController.text,
+                  email: _emailController.text,
+                  password: _passwordController.text,
                 )
                 .then(success)
                 .catchError(error);
@@ -163,7 +163,7 @@ class Login extends StatelessWidget {
   List<Widget> _buildInputTexts() {
     return [
       CustomInputText(
-        controller: emailController,
+        controller: _emailController,
         labelText: "Email",
         keyboardType: TextInputType.emailAddress,
         validator: validateEmail,
@@ -173,7 +173,7 @@ class Login extends StatelessWidget {
         ),
       ),
       PasswordInputText(
-        controller: passwordController,
+        controller: _passwordController,
       ),
     ];
   }

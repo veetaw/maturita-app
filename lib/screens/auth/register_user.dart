@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:pizza/common/validate_text.dart';
 import 'package:pizza/common/widget/circle_selector_avatar.dart';
 import 'package:pizza/common/widget/custom_input_text.dart';
 import 'package:pizza/screens/auth/common.dart';
 import 'package:pizza/screens/user/user_home.dart';
+import 'package:pizza/services/user_api.dart';
 import 'package:pizza/style/app_styles.dart';
+
+final GlobalKey<FormState> _formKey = GlobalKey();
+
+final TextEditingController _firstNameController = TextEditingController();
+final TextEditingController _lastNameController = TextEditingController();
+final TextEditingController _emailController = TextEditingController();
+final TextEditingController _addressController = TextEditingController();
+final TextEditingController _phoneController = TextEditingController();
+final TextEditingController _passwordController = TextEditingController();
 
 class RegisterUser extends StatelessWidget {
   static const String kRouteName = 'login/register';
@@ -14,13 +25,17 @@ class RegisterUser extends StatelessWidget {
       backgroundColor: AppStyles.kBackgroundColor,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            if (constraints.maxHeight > constraints.maxWidth)
-              return _buildPortrait(context, constraints);
-            else
-              return _buildLandscape(context, constraints);
-          },
+        child: Form(
+          key: _formKey,
+          autovalidate: true,
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              if (constraints.maxHeight > constraints.maxWidth)
+                return _buildPortrait(context, constraints);
+              else
+                return _buildLandscape(context, constraints);
+            },
+          ),
         ),
       ),
     );
@@ -74,17 +89,48 @@ class RegisterUser extends StatelessWidget {
     );
   }
 
-  Column _buildButton(BuildContext context) {
+  Widget _buildButton(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         buildNextButton(
           () {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              UserHome.kRouteName,
-              (_) => false,
-            );
+            error(_) {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Registrazione non riuscita"),
+                ),
+              );
+            }
+
+            success(bool result) {
+              if (result)
+                return Navigator.of(context).pushNamedAndRemoveUntil(
+                  UserHome.kRouteName,
+                  (_) => false,
+                );
+              else
+                return Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Utente già registrato"),
+                  ),
+                );
+            }
+
+            if (_formKey.currentState.validate()) {
+              UserApi()
+                  .register(
+                    firstName: _firstNameController.text,
+                    lastName: _lastNameController.text,
+                    email: _emailController.text,
+                    address: _addressController.text,
+                    phone: _phoneController.text,
+                    password: _passwordController.text,
+                  )
+                  .then(success)
+                  .catchError(error);
+            }
           },
           "Avanti",
         ),
@@ -92,52 +138,62 @@ class RegisterUser extends StatelessWidget {
     );
   }
 
-  Form _buildFields() {
-    return Form(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          CustomInputText(
-            labelText: "First name",
-            prefixIcon: Icon(
-              Icons.person,
-              color: AppStyles.kPrimaryColor,
-            ),
+  Widget _buildFields() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        CustomInputText(
+          controller: _firstNameController,
+          labelText: "First name",
+          validator: validateText,
+          prefixIcon: Icon(
+            Icons.person,
+            color: AppStyles.kPrimaryColor,
           ),
-          CustomInputText(
-            labelText: "Last name",
-            prefixIcon: Icon(
-              Icons.person,
-              color: AppStyles.kPrimaryColor,
-            ),
+        ),
+        CustomInputText(
+          controller: _lastNameController,
+          labelText: "Last name",
+          validator: validateText,
+          prefixIcon: Icon(
+            Icons.person,
+            color: AppStyles.kPrimaryColor,
           ),
-          CustomInputText(
-            labelText: "email",
-            keyboardType: TextInputType.emailAddress,
-            prefixIcon: Icon(
-              Icons.email,
-              color: AppStyles.kPrimaryColor,
-            ),
+        ),
+        CustomInputText(
+          controller: _emailController,
+          labelText: "email",
+          validator: validateEmail,
+          keyboardType: TextInputType.emailAddress,
+          prefixIcon: Icon(
+            Icons.email,
+            color: AppStyles.kPrimaryColor,
           ),
-          CustomInputText(
-            labelText: "address",
-            prefixIcon: Icon(
-              Icons.home,
-              color: AppStyles.kPrimaryColor,
-            ),
+        ),
+        CustomInputText(
+          controller: _addressController,
+          labelText: "address",
+          validator: validateText,
+          prefixIcon: Icon(
+            Icons.home,
+            color: AppStyles.kPrimaryColor,
           ),
-          CustomInputText(
-            labelText: "phone",
-            keyboardType: TextInputType.phone,
-            prefixIcon: Icon(
-              Icons.phone,
-              color: AppStyles.kPrimaryColor,
-            ),
+        ),
+        CustomInputText(
+          controller: _phoneController,
+          labelText: "phone",
+          validator: validateText,
+          keyboardType: TextInputType.phone,
+          prefixIcon: Icon(
+            Icons.phone,
+            color: AppStyles.kPrimaryColor,
           ),
-          PasswordInputText(),
-        ],
-      ),
+        ),
+        PasswordInputText(
+          controller: _passwordController,
+        ),
+      ],
     );
   }
 

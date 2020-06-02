@@ -3,3 +3,6 @@ String validateEmail(String text) =>
             .hasMatch(text))
         ? null
         : " Email non valida.";
+
+String validateText(String text) =>
+    text.length < 2 || text.length > 256 ? "Troppo corto" : null;

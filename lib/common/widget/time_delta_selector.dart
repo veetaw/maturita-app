@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:pizza/common/widget/custom_input_text.dart';
 import 'package:pizza/style/app_styles.dart';
 
 class TimeDeltaSelector extends StatelessWidget {
   final BoxConstraints constraints;
+  final Function(TimeOfDay) onTap;
+  final Function(TimeOfDay) onTap2;
 
   const TimeDeltaSelector({
     Key key,
     @required this.constraints,
+    @required this.onTap,
+    @required this.onTap2,
   }) : super(key: key);
 
   @override
@@ -59,6 +61,7 @@ class TimeDeltaSelector extends StatelessWidget {
                 isPortrait: isPortrait,
                 containerHeight: containerHeight,
                 defaultText: "Apertura",
+                onTap: onTap,
               ),
               Padding(
                 padding: EdgeInsets.only(top: padding),
@@ -67,6 +70,7 @@ class TimeDeltaSelector extends StatelessWidget {
                 isPortrait: isPortrait,
                 containerHeight: containerHeight,
                 defaultText: "Chiusura",
+                onTap: onTap2,
               ),
             ],
           ),

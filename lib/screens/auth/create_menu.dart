@@ -2,17 +2,22 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:pizza/common/validate_text.dart';
 import 'package:pizza/common/widget/circle_selector_avatar.dart';
 import 'package:pizza/common/widget/custom_switch.dart';
 import 'package:pizza/models/item.dart';
 import 'package:pizza/screens/auth/common.dart';
 import 'package:pizza/screens/owner/owner_home.dart';
+import 'package:pizza/services/owner_api.dart';
 import 'package:pizza/style/app_styles.dart';
 import 'package:provider/provider.dart';
 
 class CreateMenu extends StatelessWidget {
+  final OwnerApi api;
   static const String kRouteName =
       'login/registerOwner/createPizzeria/createOpenings/createMenu';
+
+  const CreateMenu({Key key, @required this.api}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +94,8 @@ class CreateMenu extends StatelessWidget {
                     context: context,
                     child: CustomDialog(
                       constraints: constraints,
+                      api: api,
+                      context: context,
                     ),
                   );
                 },
@@ -129,6 +136,8 @@ class CreateMenu extends StatelessWidget {
                     Image.memory(
                       Uint8List.fromList(item.image),
                     )
+
+                    
                 ],
               ),
             ),
@@ -205,16 +214,32 @@ class CreateMenu extends StatelessWidget {
   }
 }
 
-class CustomDialog extends StatelessWidget {
+class CustomDialog extends StatefulWidget {
   final BoxConstraints constraints;
+  final OwnerApi api;
+  final BuildContext context;
 
   const CustomDialog({
     Key key,
     @required this.constraints,
+    @required this.api,
+    @required this.context,
   }) : super(key: key);
 
   @override
+  _CustomDialogState createState() => _CustomDialogState();
+}
+
+class _CustomDialogState extends State<CustomDialog> {
+  String itemType = 'pizza';
+  final TextEditingController _itemNameController = TextEditingController();
+  final TextEditingController _itemPriceController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  @override
   Widget build(BuildContext context) {
+    final List<String> items = ['Pizza', 'Drink'];
+
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
       child: AlertDialog(
@@ -225,64 +250,75 @@ class CustomDialog extends StatelessWidget {
         title: Text("Dati prodotto"),
         content: Container(
           constraints: BoxConstraints(
-            maxHeight: constraints.maxHeight / 3,
-            minWidth: constraints.maxHeight > constraints.maxWidth
-                ? constraints.maxWidth
-                : constraints.maxWidth / 2,
+            maxHeight: widget.constraints.maxHeight / 3,
+            minWidth: widget.constraints.maxHeight > widget.constraints.maxWidth
+                ? widget.constraints.maxWidth
+                : widget.constraints.maxWidth / 2,
           ),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleSelectorAvatar(onTap: () {}),
-                    Column(
-                      children: [
-                        Container(
-                          width: constraints.maxWidth / 3,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              labelText: 'Nome',
-                              labelStyle: TextStyle(
-                                color: AppStyles.kPrimaryColor,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleSelectorAvatar(onTap: () {}),
+                      Column(
+                        children: [
+                          Container(
+                            width: widget.constraints.maxWidth / 3,
+                            child: TextFormField(
+                              controller: _itemNameController,
+                              validator: validateText,
+                              decoration: InputDecoration(
+                                labelText: 'Nome',
+                                labelStyle: TextStyle(
+                                  color: AppStyles.kPrimaryColor,
+                                ),
+                                border: UnderlineInputBorder(),
                               ),
-                              border: UnderlineInputBorder(),
                             ),
                           ),
-                        ),
-                        Container(
-                          width: constraints.maxWidth / 3,
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: 'Prezzo',
-                              labelStyle: TextStyle(
-                                color: AppStyles.kPrimaryColor,
+                          Container(
+                            width: widget.constraints.maxWidth / 3,
+                            child: TextFormField(
+                              controller: _itemPriceController,
+                              keyboardType: TextInputType.number,
+                              validator: (text) => text.length < 1 ||
+                                      double.tryParse(text) == null
+                                  ? "non valido"
+                                  : null,
+                              decoration: InputDecoration(
+                                labelText: 'Prezzo',
+                                labelStyle: TextStyle(
+                                  color: AppStyles.kPrimaryColor,
+                                ),
+                                suffixText: "€",
+                                border: UnderlineInputBorder(),
                               ),
-                              suffixText: "€",
-                              border: UnderlineInputBorder(),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: kStandardPadding,
                     ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: kStandardPadding,
+                    child: CustomSwitch(
+                      titles: items,
+                      tapCallback: (i) => setState(() => itemType = items[i]),
+                      constraints: widget.constraints,
+                    ),
                   ),
-                  child: CustomSwitch(
-                    titles: ['Pizza', 'Drink'],
-                    constraints: constraints,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -294,7 +330,22 @@ class CustomDialog extends StatelessWidget {
             ),
           ),
           FlatButton(
-            onPressed: () {},
+            onPressed: () async {
+              if (_formKey.currentState.validate() &&
+                  double.tryParse(_itemPriceController.text) != null) {
+                Item item = await widget.api.createItem(
+                  name: _itemNameController.text,
+                  price: double.parse(_itemPriceController.text),
+                  type: fromString(itemType.toLowerCase()),
+                );
+
+                await widget.api.addToMenu(item);
+
+                Provider.of<MenuNotifier>(widget.context, listen: false)
+                    .addItem(item);
+                Navigator.of(context).pop();
+              }
+            },
             child: Center(
               child: Text("Aggiungi"),
             ),

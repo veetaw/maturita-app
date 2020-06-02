@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:pizza/common/validate_text.dart';
 import 'package:pizza/common/widget/circle_selector_avatar.dart';
 import 'package:pizza/common/widget/custom_input_text.dart';
 import 'package:pizza/screens/auth/auth.dart';
 import 'package:pizza/screens/auth/common.dart';
+import 'package:pizza/services/owner_api.dart';
 import 'package:pizza/style/app_styles.dart';
 
+final TextEditingController _nameController = TextEditingController();
+final TextEditingController _pIvaController = TextEditingController();
+final TextEditingController _emailController = TextEditingController();
+final TextEditingController _addressController = TextEditingController();
+final TextEditingController _phoneController = TextEditingController();
+
 class CreatePizzeria extends StatelessWidget {
+  final OwnerApi api;
   static const String kRouteName = 'login/registerOwner/createPizzeria';
+
+  const CreatePizzeria({Key key, @required this.api}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +28,17 @@ class CreatePizzeria extends StatelessWidget {
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             if (constraints.maxHeight > constraints.maxWidth)
-              return _buildPortrait(context, constraints);
+              return _buildPortrait(context, constraints, api);
             else
-              return _buildLandscape(context, constraints);
+              return _buildLandscape(context, constraints, api);
           },
         ),
       ),
     );
   }
 
-  Widget _buildPortrait(BuildContext context, BoxConstraints constraints) {
+  Widget _buildPortrait(
+      BuildContext context, BoxConstraints constraints, OwnerApi api) {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
@@ -65,7 +77,7 @@ class CreatePizzeria extends StatelessWidget {
               flex: 2,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: kStandardPadding),
-                child: _buildButton(context),
+                child: _buildButton(context, api),
               ),
             ),
           ],
@@ -74,15 +86,37 @@ class CreatePizzeria extends StatelessWidget {
     );
   }
 
-  Column _buildButton(BuildContext context) {
+  Column _buildButton(BuildContext context, OwnerApi api) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         buildNextButton(() {
-          Navigator.of(context).pushNamed(
-            CreateOpenings.kRouteName,
-          );
+          success(_) {
+            Navigator.of(context).pushNamed(
+              CreateOpenings.kRouteName,
+              arguments: api,
+            );
+          }
+
+          error(_) {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Impossibile creare pizzeria"),
+              ),
+            );
+          }
+
+          api
+              .createPizzeria(
+                name: _nameController.text,
+                pIva: _pIvaController.text,
+                address: _addressController.text,
+                phone: _phoneController.text,
+                email: _emailController.text,
+              )
+              .then(success)
+              .catchError(error);
         }, "Avanti"),
       ],
     );
@@ -96,6 +130,8 @@ class CreatePizzeria extends StatelessWidget {
         children: [
           CustomInputText(
             labelText: "Name",
+            validator: validateText,
+            controller: _nameController,
             prefixIcon: Icon(
               Icons.person,
               color: AppStyles.kPrimaryColor,
@@ -103,6 +139,9 @@ class CreatePizzeria extends StatelessWidget {
           ),
           CustomInputText(
             labelText: "P.IVA",
+            validator: (text) =>
+                text.length != 11 ? 'Partita Iva non valida' : null,
+            controller: _pIvaController,
             prefixIcon: Icon(
               Icons.business,
               color: AppStyles.kPrimaryColor,
@@ -110,6 +149,8 @@ class CreatePizzeria extends StatelessWidget {
           ),
           CustomInputText(
             labelText: "address",
+            validator: validateText,
+            controller: _addressController,
             prefixIcon: Icon(
               Icons.home,
               color: AppStyles.kPrimaryColor,
@@ -117,6 +158,8 @@ class CreatePizzeria extends StatelessWidget {
           ),
           CustomInputText(
             labelText: "phone",
+            validator: validateText,
+            controller: _phoneController,
             keyboardType: TextInputType.phone,
             prefixIcon: Icon(
               Icons.phone,
@@ -124,6 +167,8 @@ class CreatePizzeria extends StatelessWidget {
             ),
           ),
           CustomInputText(
+            controller: _emailController,
+            validator: validateEmail,
             labelText: "email",
             keyboardType: TextInputType.emailAddress,
             prefixIcon: Icon(
@@ -131,7 +176,6 @@ class CreatePizzeria extends StatelessWidget {
               color: AppStyles.kPrimaryColor,
             ),
           ),
-          PasswordInputText(),
         ],
       ),
     );
@@ -156,7 +200,8 @@ class CreatePizzeria extends StatelessWidget {
     ];
   }
 
-  Widget _buildLandscape(BuildContext context, BoxConstraints constraints) {
+  Widget _buildLandscape(
+      BuildContext context, BoxConstraints constraints, OwnerApi api) {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
@@ -183,7 +228,7 @@ class CreatePizzeria extends StatelessWidget {
                         CircleSelectorAvatar(onTap: () {}),
                       ],
                     ),
-                    _buildButton(context),
+                    _buildButton(context, api),
                   ],
                 ),
               ),

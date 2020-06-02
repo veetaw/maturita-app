@@ -19,11 +19,17 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
         case RegisterOwner.kRouteName:
           return RegisterOwner();
         case CreatePizzeria.kRouteName:
-          return CreatePizzeria();
+          return CreatePizzeria(
+            api: settings.arguments,
+          );
         case CreateOpenings.kRouteName:
-          return CreateOpenings();
+          return CreateOpenings(
+            api: settings.arguments,
+          );
         case CreateMenu.kRouteName:
-          return CreateMenu();
+          return CreateMenu(
+            api: settings.arguments,
+          );
         default:
           return Text('unknown route');
       }

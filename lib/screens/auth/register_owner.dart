@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:pizza/common/validate_text.dart';
 import 'package:pizza/common/widget/circle_selector_avatar.dart';
 import 'package:pizza/common/widget/custom_input_text.dart';
 import 'package:pizza/screens/auth/common.dart';
 import 'package:pizza/screens/auth/create_pizzeria.dart';
+import 'package:pizza/services/owner_api.dart';
 import 'package:pizza/style/app_styles.dart';
+
+final GlobalKey<FormState> _formKey = GlobalKey();
+
+final TextEditingController _firstNameController = TextEditingController();
+final TextEditingController _lastNameController = TextEditingController();
+final TextEditingController _emailController = TextEditingController();
+final TextEditingController _passwordController = TextEditingController();
 
 class RegisterOwner extends StatelessWidget {
   static const String kRouteName = 'login/registerOwner';
@@ -14,13 +23,17 @@ class RegisterOwner extends StatelessWidget {
       backgroundColor: AppStyles.kBackgroundColor,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            if (constraints.maxHeight > constraints.maxWidth)
-              return _buildPortrait(context, constraints);
-            else
-              return _buildLandscape(context, constraints);
-          },
+        child: Form(
+          key: _formKey,
+          autovalidate: true,
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              if (constraints.maxHeight > constraints.maxWidth)
+                return _buildPortrait(context, constraints);
+              else
+                return _buildLandscape(context, constraints);
+            },
+          ),
         ),
       ),
     );
@@ -81,9 +94,44 @@ class RegisterOwner extends StatelessWidget {
       children: [
         buildNextButton(
           () {
-            Navigator.of(context).pushNamed(
-              CreatePizzeria.kRouteName,
-            );
+            error(_) {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Registrazione non riuscita"),
+                ),
+              );
+            }
+
+            success(bool result) async {
+              if (result) {
+                OwnerApi api = OwnerApi();
+                await api.login(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                );
+                return Navigator.of(context).pushNamed(
+                  CreatePizzeria.kRouteName,
+                  arguments: api,
+                );
+              } else
+                return Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Proprietario già registrato"),
+                  ),
+                );
+            }
+
+            if (_formKey.currentState.validate()) {
+              OwnerApi()
+                  .register(
+                    firstName: _firstNameController.text,
+                    lastName: _lastNameController.text,
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                  )
+                  .then(success)
+                  .catchError(error);
+            }
           },
           "Avanti",
         ),
@@ -91,37 +139,43 @@ class RegisterOwner extends StatelessWidget {
     );
   }
 
-  Form _buildFields() {
-    return Form(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          CustomInputText(
-            labelText: "First name",
-            prefixIcon: Icon(
-              Icons.person,
-              color: AppStyles.kPrimaryColor,
-            ),
+  Widget _buildFields() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        CustomInputText(
+          controller: _firstNameController,
+          labelText: "First name",
+          validator: validateText,
+          prefixIcon: Icon(
+            Icons.person,
+            color: AppStyles.kPrimaryColor,
           ),
-          CustomInputText(
-            labelText: "Last name",
-            prefixIcon: Icon(
-              Icons.person,
-              color: AppStyles.kPrimaryColor,
-            ),
+        ),
+        CustomInputText(
+          controller: _lastNameController,
+          labelText: "Last name",
+          validator: validateText,
+          prefixIcon: Icon(
+            Icons.person,
+            color: AppStyles.kPrimaryColor,
           ),
-          CustomInputText(
-            labelText: "email",
-            keyboardType: TextInputType.emailAddress,
-            prefixIcon: Icon(
-              Icons.email,
-              color: AppStyles.kPrimaryColor,
-            ),
+        ),
+        CustomInputText(
+          controller: _emailController,
+          labelText: "email",
+          validator: validateEmail,
+          keyboardType: TextInputType.emailAddress,
+          prefixIcon: Icon(
+            Icons.email,
+            color: AppStyles.kPrimaryColor,
           ),
-          PasswordInputText(),
-        ],
-      ),
+        ),
+        PasswordInputText(
+          controller: _passwordController,
+        ),
+      ],
     );
   }
 
