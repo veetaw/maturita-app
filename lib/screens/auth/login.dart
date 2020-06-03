@@ -22,21 +22,22 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double paddingTop = MediaQuery.of(context).padding.top;
+
     return Scaffold(
       backgroundColor: AppStyles.kBackgroundColor,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: ChangeNotifierProvider<SwitchNotifier>(
           create: (_) => SwitchNotifier(),
           child: Form(
             key: _formKey,
             autovalidate: true,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                if (constraints.maxHeight > constraints.maxWidth)
-                  return _buildPortrait(context, constraints);
-                else
-                  return _buildLandscape(context, constraints);
+            child: OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+                return orientation == Orientation.portrait
+                    ? _buildPortrait(context, paddingTop)
+                    : _buildLandscape(context, paddingTop);
               },
             ),
           ),
@@ -45,12 +46,14 @@ class Login extends StatelessWidget {
     );
   }
 
-  Widget _buildPortrait(BuildContext context, BoxConstraints constraints) {
+  Widget _buildPortrait(BuildContext context, double paddingTop) {
+    Size size = MediaQuery.of(context).size;
+
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
-        width: constraints.maxWidth,
-        height: constraints.maxHeight,
+        width: size.width,
+        height: size.height - paddingTop,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -91,7 +94,7 @@ class Login extends StatelessWidget {
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: _buildButtons(context, constraints),
+                  children: _buildButtons(context),
                 ),
               ),
             ),
@@ -101,14 +104,19 @@ class Login extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildButtons(BuildContext context, BoxConstraints constraints) {
+  List<Widget> _buildButtons(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     int activeIndex = Provider.of<SwitchNotifier>(
       context,
       listen: false,
     ).activeIndex;
     return [
       CustomSwitch(
-        constraints: constraints,
+        constraints: BoxConstraints(
+          maxHeight: size.height,
+          maxWidth: size.width,
+        ),
         tapCallback: (i) =>
             Provider.of<SwitchNotifier>(context, listen: false).activeIndex = i,
       ),
@@ -178,12 +186,13 @@ class Login extends StatelessWidget {
     ];
   }
 
-  Widget _buildLandscape(BuildContext context, BoxConstraints constraints) {
+  Widget _buildLandscape(BuildContext context, double paddingTop) {
+    Size size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
-        width: constraints.maxWidth,
-        height: constraints.maxHeight,
+        width: size.width,
+        height: size.height - paddingTop,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -192,8 +201,8 @@ class Login extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: kStandardPadding),
                 child: Container(
-                  height: constraints.maxHeight,
-                  width: constraints.maxWidth / 2,
+                  height: size.height - paddingTop,
+                  width: size.width / 2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -218,7 +227,7 @@ class Login extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: _buildButtons(context, constraints),
+                          children: _buildButtons(context),
                         ),
                       ),
                     ],
@@ -231,7 +240,7 @@ class Login extends StatelessWidget {
               child: Center(
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: kStandardPadding),
-                  height: constraints.maxHeight / 2,
+                  height: size.height - paddingTop / 2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

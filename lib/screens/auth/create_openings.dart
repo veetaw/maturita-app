@@ -15,18 +15,19 @@ class CreateOpenings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double paddingTop = MediaQuery.of(context).padding.top;
+
     return Scaffold(
       backgroundColor: AppStyles.kBackgroundColor,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: ChangeNotifierProvider<OpeningsNotifier>(
           create: (_) => OpeningsNotifier(),
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              if (constraints.maxHeight > constraints.maxWidth)
-                return _buildPortrait(context, constraints);
-              else
-                return _buildLandscape(context, constraints);
+          child: OrientationBuilder(
+            builder: (BuildContext context, Orientation orientation) {
+              return orientation == Orientation.portrait
+                  ? _buildPortrait(context, paddingTop)
+                  : _buildLandscape(context, paddingTop);
             },
           ),
         ),
@@ -34,12 +35,14 @@ class CreateOpenings extends StatelessWidget {
     );
   }
 
-  Widget _buildPortrait(BuildContext context, BoxConstraints constraints) {
+  Widget _buildPortrait(BuildContext context, double paddingTop) {
+    Size size = MediaQuery.of(context).size;
+
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
-        width: constraints.maxWidth,
-        height: constraints.maxHeight,
+        width: size.width,
+        height: size.height - paddingTop,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -65,7 +68,6 @@ class CreateOpenings extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TimeDeltaSelector(
-                      constraints: constraints,
                       onTap: (time) =>
                           Provider.of<OpeningsNotifier>(context, listen: false)
                               .setOpening1(0, time),
@@ -79,7 +81,6 @@ class CreateOpenings extends StatelessWidget {
                       ),
                     ),
                     TimeDeltaSelector(
-                      constraints: constraints,
                       onTap: (time) =>
                           Provider.of<OpeningsNotifier>(context, listen: false)
                               .setOpening2(0, time),
@@ -177,12 +178,14 @@ class CreateOpenings extends StatelessWidget {
     ];
   }
 
-  Widget _buildLandscape(BuildContext context, BoxConstraints constraints) {
+  Widget _buildLandscape(BuildContext context, double paddingTop) {
+    Size size = MediaQuery.of(context).size;
+
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
-        width: constraints.maxWidth,
-        height: constraints.maxHeight,
+        width: size.width,
+        height: size.height - paddingTop,
         child: Row(
           children: [
             Expanded(
@@ -211,7 +214,6 @@ class CreateOpenings extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TimeDeltaSelector(
-                      constraints: constraints,
                       onTap: (time) =>
                           Provider.of<OpeningsNotifier>(context, listen: false)
                               .setOpening1(0, time),
@@ -225,7 +227,6 @@ class CreateOpenings extends StatelessWidget {
                       ),
                     ),
                     TimeDeltaSelector(
-                      constraints: constraints,
                       onTap: (time) =>
                           Provider.of<OpeningsNotifier>(context, listen: false)
                               .setOpening2(0, time),

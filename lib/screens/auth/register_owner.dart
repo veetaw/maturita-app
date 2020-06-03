@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:pizza/common/encode_profile_picture.dart';
 import 'package:pizza/common/validate_text.dart';
 import 'package:pizza/common/widget/circle_selector_avatar.dart';
 import 'package:pizza/common/widget/custom_input_text.dart';
 import 'package:pizza/screens/auth/common.dart';
 import 'package:pizza/screens/auth/create_pizzeria.dart';
+import 'package:pizza/screens/auth/register_user.dart';
 import 'package:pizza/services/owner_api.dart';
 import 'package:pizza/style/app_styles.dart';
+import 'package:provider/provider.dart';
 
 final GlobalKey<FormState> _formKey = GlobalKey();
 
@@ -19,32 +22,38 @@ class RegisterOwner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double paddingTop = MediaQuery.of(context).padding.top;
+
     return Scaffold(
       backgroundColor: AppStyles.kBackgroundColor,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Form(
-          key: _formKey,
-          autovalidate: true,
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              if (constraints.maxHeight > constraints.maxWidth)
-                return _buildPortrait(context, constraints);
-              else
-                return _buildLandscape(context, constraints);
-            },
+        child: ChangeNotifierProvider<ProfilePictureNotifier>(
+          create: (_) => ProfilePictureNotifier(),
+          child: Form(
+            key: _formKey,
+            autovalidate: true,
+            child: OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+                return orientation == Orientation.portrait
+                    ? _buildPortrait(context, paddingTop)
+                    : _buildLandscape(context, paddingTop);
+              },
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildPortrait(BuildContext context, BoxConstraints constraints) {
+  Widget _buildPortrait(BuildContext context, double paddingTop) {
+    Size size = MediaQuery.of(context).size;
+
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
-        width: constraints.maxWidth,
-        height: constraints.maxHeight,
+        width: size.width,
+        height: size.height - paddingTop,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -61,7 +70,16 @@ class RegisterOwner extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: _buildTitle(),
                     ),
-                    CircleSelectorAvatar(onTap: () {}),
+                    CircleSelectorAvatar(
+                      image: getCircleImage(context),
+                      onTap: () async {
+                        String base64 = await encodeProfilePicture();
+                        if (base64 != null)
+                          Provider.of<ProfilePictureNotifier>(context,
+                                  listen: false)
+                              .image = base64;
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -128,6 +146,10 @@ class RegisterOwner extends StatelessWidget {
                     lastName: _lastNameController.text,
                     email: _emailController.text,
                     password: _passwordController.text,
+                    profilePicture: Provider.of<ProfilePictureNotifier>(
+                      context,
+                      listen: false,
+                    ).image,
                   )
                   .then(success)
                   .catchError(error);
@@ -198,12 +220,14 @@ class RegisterOwner extends StatelessWidget {
     ];
   }
 
-  Widget _buildLandscape(BuildContext context, BoxConstraints constraints) {
+  Widget _buildLandscape(BuildContext context, double paddingTop) {
+    Size size = MediaQuery.of(context).size;
+
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
-        width: constraints.maxWidth,
-        height: constraints.maxHeight,
+        width: size.width,
+        height: size.height - paddingTop,
         child: Row(
           children: [
             Expanded(
@@ -222,7 +246,16 @@ class RegisterOwner extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: buildTitle('Crea', 'Account'),
                         ),
-                        CircleSelectorAvatar(onTap: () {}),
+                        CircleSelectorAvatar(
+                          image: getCircleImage(context),
+                          onTap: () async {
+                            String base64 = await encodeProfilePicture();
+                            if (base64 != null)
+                              Provider.of<ProfilePictureNotifier>(context,
+                                      listen: false)
+                                  .image = base64;
+                          },
+                        ),
                       ],
                     ),
                     _buildButton(context),

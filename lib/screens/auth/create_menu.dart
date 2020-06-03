@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:pizza/common/encode_profile_picture.dart';
 import 'package:pizza/common/validate_text.dart';
 import 'package:pizza/common/widget/circle_selector_avatar.dart';
 import 'package:pizza/common/widget/custom_switch.dart';
@@ -21,19 +23,21 @@ class CreateMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double paddingTop = MediaQuery.of(context).padding.top;
+
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: AppStyles.kBackgroundColor,
       body: SafeArea(
         child: ChangeNotifierProvider<MenuNotifier>(
           create: (_) => MenuNotifier(),
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
+          child: OrientationBuilder(
+            builder: (BuildContext context, Orientation orientation) {
               return SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
-                child: constraints.maxHeight > constraints.maxWidth
-                    ? _buildPortrait(constraints, context)
-                    : _buildLandscape(constraints, context),
+                child: orientation == Orientation.portrait
+                    ? _buildPortrait(context, paddingTop)
+                    : _buildLandscape(context, paddingTop),
               );
             },
           ),
@@ -42,10 +46,12 @@ class CreateMenu extends StatelessWidget {
     );
   }
 
-  Container _buildPortrait(BoxConstraints constraints, BuildContext context) {
+  Container _buildPortrait(BuildContext context, double paddingTop) {
+    Size size = MediaQuery.of(context).size;
+
     return Container(
-      width: constraints.maxWidth,
-      height: constraints.maxHeight,
+      width: size.width,
+      height: size.height - paddingTop,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -55,7 +61,7 @@ class CreateMenu extends StatelessWidget {
           ),
           Expanded(
             flex: 6,
-            child: _buildItems(constraints, context),
+            child: _buildItems(context),
           ),
           Expanded(
             flex: 2,
@@ -66,7 +72,7 @@ class CreateMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildItems(BoxConstraints constraints, BuildContext context) {
+  Widget _buildItems(BuildContext context) {
     List<Item> items = Provider.of<MenuNotifier>(context).items;
     return ListView(
       shrinkWrap: true,
@@ -146,7 +152,7 @@ class CreateMenu extends StatelessWidget {
         Align(
           alignment: Alignment.centerRight,
           child: Container(
-            width: constraints.maxWidth / 2,
+            width: MediaQuery.of(context).size.width / 2,
             padding: EdgeInsets.only(top: kStandardPadding),
             child: MaterialButton(
               height: 50,
@@ -154,7 +160,10 @@ class CreateMenu extends StatelessWidget {
                 showDialog(
                   context: context,
                   child: CustomDialog(
-                    constraints: constraints,
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height,
+                      maxWidth: MediaQuery.of(context).size.width,
+                    ),
                     api: api,
                     context: context,
                   ),
@@ -214,10 +223,12 @@ class CreateMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildLandscape(BoxConstraints constraints, BuildContext context) {
+  Widget _buildLandscape(BuildContext context, double paddingTop) {
+    Size size = MediaQuery.of(context).size;
+
     return Container(
-      width: constraints.maxWidth,
-      height: constraints.maxHeight,
+      width: size.width,
+      height: size.height - paddingTop,
       child: Row(
         children: [
           Expanded(
@@ -240,7 +251,7 @@ class CreateMenu extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildItems(constraints, context),
+                  _buildItems(context),
                 ],
               ),
             ),
@@ -269,6 +280,7 @@ class CustomDialog extends StatefulWidget {
 
 class _CustomDialogState extends State<CustomDialog> {
   String itemType = 'pizza';
+  String image;
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _itemPriceController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -304,7 +316,19 @@ class _CustomDialogState extends State<CustomDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleSelectorAvatar(onTap: () {}),
+                      CircleSelectorAvatar(
+                        image: image != null
+                            ? CircleAvatar(
+                                backgroundImage:
+                                    MemoryImage(base64Decode(image)),
+                                radius: 100,
+                              )
+                            : null,
+                        onTap: () async {
+                          String base64 = await encodeProfilePicture();
+                          if (base64 != null) setState(() => image = base64);
+                        },
+                      ),
                       Column(
                         children: [
                           Container(
@@ -374,6 +398,7 @@ class _CustomDialogState extends State<CustomDialog> {
                   name: _itemNameController.text,
                   price: double.parse(_itemPriceController.text),
                   type: fromString(itemType.toLowerCase()),
+                  image: image,
                 );
 
                 await widget.api.addToMenu(item);

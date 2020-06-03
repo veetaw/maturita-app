@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:pizza/style/app_styles.dart';
 
 class TimeDeltaSelector extends StatelessWidget {
-  final BoxConstraints constraints;
   final Function(TimeOfDay) onTap;
   final Function(TimeOfDay) onTap2;
 
   const TimeDeltaSelector({
     Key key,
-    @required this.constraints,
     @required this.onTap,
     @required this.onTap2,
   }) : super(key: key);
@@ -18,7 +16,8 @@ class TimeDeltaSelector extends StatelessWidget {
     final double containerHeight = 50;
     final double padding = containerHeight / 2;
 
-    bool isPortrait = constraints.maxHeight > constraints.maxWidth;
+    bool isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
 
     return Container(
       child: Row(

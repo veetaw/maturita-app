@@ -121,6 +121,7 @@ class OwnerApi extends PizzaApi {
     @required String name,
     @required double price,
     @required ItemType type,
+    String image,
   }) async {
     const path = '/owner/item';
     final Map<String, dynamic> body = {
