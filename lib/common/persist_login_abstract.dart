@@ -15,5 +15,9 @@ abstract class PersistLogin {
 
   Future<bool> isUser();
 
+  Future deleteToken();
+
+  Future deleteUserType();
+
   factory PersistLogin() => getPersistLoginImplementation();
 }

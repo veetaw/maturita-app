@@ -22,6 +22,12 @@ class PersistLoginMobile implements PersistLogin {
     String type = await storage.read(key: kUserTypeKey);
     return type != null && type.isNotEmpty && type.toLowerCase() == 'user';
   }
+
+  @override
+  Future deleteToken() async => storage.delete(key: kTokenKey);
+
+  @override
+  Future deleteUserType() async => storage.delete(key: kUserTypeKey);
 }
 
 PersistLogin getPersistLoginImplementation() => PersistLoginMobile();

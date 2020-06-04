@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pizza/common/encode_profile_picture.dart';
+import 'package:pizza/common/persist_login_abstract.dart';
 import 'package:pizza/common/validate_text.dart';
 import 'package:pizza/common/widget/circle_selector_avatar.dart';
 import 'package:pizza/common/widget/custom_input_text.dart';
@@ -123,7 +124,15 @@ class RegisterUser extends StatelessWidget {
               );
             }
 
-            success(bool result) {
+            success(bool result) async {
+              String token = await UserApi().login(
+                email: _emailController.text,
+                password: _passwordController.text,
+              );
+              PersistLogin()
+                ..saveToken(token)
+                ..saveUserType('user');
+
               if (result)
                 return Navigator.of(context).pushNamedAndRemoveUntil(
                   UserHome.kRouteName,

@@ -28,6 +28,12 @@ class PersistLoginWeb implements PersistLogin {
     String type = windowLoc.localStorage[kUserTypeKey];
     return type != null && type.isNotEmpty && type.toLowerCase() == 'user';
   }
+
+  @override
+  Future deleteToken() async => windowLoc.localStorage.remove(kTokenKey);
+
+  @override
+  Future deleteUserType() async => windowLoc.localStorage.remove(kUserTypeKey);
 }
 
 PersistLogin getPersistLoginImplementation() => PersistLoginWeb();

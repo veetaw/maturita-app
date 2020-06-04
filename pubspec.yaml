@@ -32,6 +32,7 @@ dependencies:
   cross_picker:
     git:
       url: https://github.com/pspgt/cross_picker.git
+  undraw: ^1.0.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -46,6 +47,7 @@ dev_dependencies:
 
 dependency_overrides:
   path: 1.7.0
+  flutter_svg: ^0.17.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

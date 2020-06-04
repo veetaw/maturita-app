@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pizza/common/encode_profile_picture.dart';
+import 'package:pizza/common/persist_login_abstract.dart';
 import 'package:pizza/common/validate_text.dart';
 import 'package:pizza/common/widget/circle_selector_avatar.dart';
 import 'package:pizza/common/widget/custom_input_text.dart';
@@ -123,10 +124,15 @@ class RegisterOwner extends StatelessWidget {
             success(bool result) async {
               if (result) {
                 OwnerApi api = OwnerApi();
-                await api.login(
+                String token = await api.login(
                   email: _emailController.text,
                   password: _passwordController.text,
                 );
+
+                PersistLogin()
+                  ..saveToken(token)
+                  ..saveUserType('owner');
+
                 return Navigator.of(context).pushNamed(
                   CreatePizzeria.kRouteName,
                   arguments: api,
