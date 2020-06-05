@@ -51,7 +51,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: kStandardPadding / 2),
+                        horizontal: kStandardPadding / 2,
+                      ),
                       child: Icon(
                         Icons.search,
                         color: AppStyles.kPrimaryColor,

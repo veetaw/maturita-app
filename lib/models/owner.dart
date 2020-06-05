@@ -33,7 +33,7 @@ class Owner extends HiveObject {
     lastName = json['lastName'];
     email = json['email'];
     profilePicture = json['profile_picture'] != null
-        ? json['profile_picture']['data']
+        ? List<int>.from(json['profile_picture']['data'])
         : null;
   }
 }

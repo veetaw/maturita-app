@@ -46,7 +46,9 @@ class Pizzeria extends HiveObject {
     address = json['address'];
     phone = json['phone'];
     email = json['email'];
-    profilePicture = json['image'] != null ? json['image']['data'] : null;
+    profilePicture = json['image'] != null
+        ? List<int>.from(json['image']['data'])
+        : null;
     if (json['menu'] != null)
       menu = json['menu'].map((item) => Item.fromJson(item)).toList();
   }

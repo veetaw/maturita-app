@@ -34,7 +34,8 @@ class Item extends HiveObject {
     name = json['name'];
     price = json['price'].toDouble();
     type = fromString(json['type']);
-    image = json['image'];
+    image =
+        json['image'] != null ? List<int>.from(json['image']['data']) : null;
   }
 
   Map<String, dynamic> toJson() {

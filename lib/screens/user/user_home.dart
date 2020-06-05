@@ -6,9 +6,12 @@ import 'package:pizza/screens/common/errors/access_error_screen.dart';
 import 'package:pizza/screens/common/errors/connection_error_screen.dart';
 import 'package:pizza/screens/common/loading_screen.dart';
 import 'package:pizza/screens/user/app_bar.dart';
+import 'package:pizza/screens/user/recent_orders.dart';
 import 'package:pizza/services/user_api.dart';
 import 'package:pizza/style/app_styles.dart';
 import 'package:provider/provider.dart';
+
+UserApi userApi = UserApi();
 
 class UserHome extends StatefulWidget {
   static const String kRouteName = 'userHome';
@@ -18,7 +21,6 @@ class UserHome extends StatefulWidget {
 }
 
 class _UserHomeState extends State<UserHome> {
-  UserApi userApi = UserApi();
   @override
   void initState() {
     super.initState();
@@ -26,38 +28,47 @@ class _UserHomeState extends State<UserHome> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: test this shit
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppStyles.kCardColor,
-      body: LayoutBuilder(builder: (context, constraints) {
-        return FutureBuilder<User>(
-          future: login(userApi),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done)
-              return LoadingScreen();
-            if (snapshot.hasError) return ConnectionErrorScreen();
+      body: LayoutBuilder(
+        builder: (_, constraints) {
+          return FutureProvider<User>(
+            create: (_) => login(),
+            child: Consumer<User>(
+              builder: (context, user, _) {
+                if (user == null) return LoadingScreen();
 
-            return ListView(
-              physics: BouncingScrollPhysics(),
-              children: [
-                CustomAppBar(
-                  user: snapshot.data,
-                  constraints: constraints,
-                ),
-              ],
-            );
-          },
-        );
-      }),
+                return ListView(
+                  physics: BouncingScrollPhysics(),
+                  children: [
+                    CustomAppBar(
+                      user: user,
+                      constraints: constraints,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: kStandardPadding,
+                      ),
+                    ),
+                    RecentOrders(
+                      api: userApi,
+                    ),
+                  ],
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }
 
-Future<User> login(UserApi api) async {
+Future<User> login() async {
   String token = await PersistLogin().getToken();
   if (token == null) throw Exception();
-  api.loginWithToken(token);
-  var user = await api.info();
+  userApi.loginWithToken(token);
+  var user = await userApi.info();
   return user;
 }

@@ -111,7 +111,11 @@ class CreateMenu extends StatelessWidget {
                     ),
                   if (item.image != null)
                     Image.memory(
-                      Uint8List.fromList(item.image),
+                      base64Decode(
+                        String.fromCharCodes(
+                          item.image,
+                        ).split("base64,")[1],
+                      ),
                       width: 100,
                       height: 100,
                       fit: BoxFit.fill,
