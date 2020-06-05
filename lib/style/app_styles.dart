@@ -7,6 +7,7 @@ class AppStyles {
   static const Color kSecondaryAccentColor = Color(0xffA3B18A);
   static const Color kBackgroundColor = Color(0xffDAD7CD);
   static const Color kCardColor = Color(0xffEEECE8);
+  static const Color kDividerColor = Color(0xffF5F5F5);
 }
 
 const double kStandardPadding = 32;

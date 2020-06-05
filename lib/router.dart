@@ -31,7 +31,7 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
             api: settings.arguments,
           );
         default:
-          return Text('unknown route');
+          return Scaffold(body: Text('unknown route'));
       }
     },
   );

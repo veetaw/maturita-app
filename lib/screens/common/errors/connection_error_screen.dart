@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pizza/style/app_styles.dart';
 import 'package:undraw/undraw.dart';
@@ -16,14 +17,15 @@ class ConnectionErrorScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          UnDraw(
-            illustration: UnDrawIllustration.server_down,
-            color: AppStyles.kSecondaryAccentColor,
-            placeholder: CircularProgressIndicator(),
-            errorWidget: Container(),
-            height: isPortrait ? size.height / 2 : size.height / 3,
-            width: isPortrait ? size.width : size.width / 2,
-          ),
+          if (!kIsWeb)
+            UnDraw(
+              illustration: UnDrawIllustration.server_down,
+              color: AppStyles.kSecondaryAccentColor,
+              placeholder: CircularProgressIndicator(),
+              errorWidget: Container(),
+              height: isPortrait ? size.height / 2 : size.height / 3,
+              width: isPortrait ? size.width : size.width / 2,
+            ),
           Text(
             "Impossibile connettersi al server",
             style: Theme.of(context).textTheme.headline5,

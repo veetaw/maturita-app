@@ -43,7 +43,7 @@ class User extends HiveObject {
     address = json['address'];
     phone = json['phone'];
     profilePicture = json['profile_picture'] != null
-        ? json['profile_picture']['data']
+        ? List<int>.from(json['profile_picture']['data'])
         : null;
   }
 
