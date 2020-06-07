@@ -28,36 +28,41 @@ class _UserHomeState extends State<UserHome> {
 
   @override
   Widget build(BuildContext context) {
+    if (Provider.of<ConnectivityStatus>(context) ==
+        ConnectivityStatus.NotConnected)
+      Navigator.of(context).pushReplacementNamed('network_error');
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppStyles.kCardColor,
       body: LayoutBuilder(
         builder: (_, constraints) {
-          return FutureProvider<User>(
-            create: (_) => login(),
-            child: Consumer<User>(
-              builder: (context, user, _) {
-                if (user == null) return LoadingScreen();
+          return FutureBuilder<User>(
+            future: login(),
+            builder: (context, snapshot) {
+              User user = snapshot.data;
+              if (snapshot.connectionState != ConnectionState.done &&
+                  user == null) return LoadingScreen();
+              if (snapshot.hasError) return AccessErrorScreen();
 
-                return ListView(
-                  physics: BouncingScrollPhysics(),
-                  children: [
-                    CustomAppBar(
-                      user: user,
-                      constraints: constraints,
+              return ListView(
+                physics: BouncingScrollPhysics(),
+                children: [
+                  CustomAppBar(
+                    user: user,
+                    constraints: constraints,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: kStandardPadding,
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: kStandardPadding,
-                      ),
-                    ),
-                    RecentOrders(
-                      api: userApi,
-                    ),
-                  ],
-                );
-              },
-            ),
+                  ),
+                  RecentOrders(
+                    api: userApi,
+                  ),
+                ],
+              );
+            },
           );
         },
       ),

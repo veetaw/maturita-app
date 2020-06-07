@@ -27,21 +27,8 @@ class LoadingScreen extends StatelessWidget {
               width: isPortrait ? size.width : size.width / 2,
             ),
           Text(
-            "Login in corso ...",
+            "Caricamento...",
             style: Theme.of(context).textTheme.headline5,
-          ),
-          FlatButton(
-            color: AppStyles.kPrimaryColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            onPressed: () async {},
-            textColor: Colors.white,
-            child: Container(
-              alignment: Alignment.center,
-              width: size.width - (kStandardPadding * 2),
-              child: Text("Rieffettua login"),
-            ),
           ),
         ],
       ),

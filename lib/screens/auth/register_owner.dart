@@ -33,7 +33,7 @@ class RegisterOwner extends StatelessWidget {
           create: (_) => ProfilePictureNotifier(),
           child: Form(
             key: _formKey,
-            autovalidate: true,
+            autovalidate: false,
             child: OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {
                 return orientation == Orientation.portrait

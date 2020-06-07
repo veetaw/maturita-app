@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:pizza/models/user.dart';
+import 'package:pizza/screens/user/edit_user.dart';
 import 'package:pizza/style/app_styles.dart';
 
 class CustomAppBar extends StatefulWidget {
@@ -24,6 +25,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   @override
   Widget build(BuildContext context) {
+    String rawImage = String.fromCharCodes(
+      widget.user.profilePicture,
+    );
+    String image = rawImage.split("base64,").length == 1
+        ? rawImage
+        : rawImage.split("base64,")[1];
+
     return InkWell(
       onTap: () => setState(() => expanded = !expanded),
       child: Container(
@@ -124,7 +132,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   ),
                   if (!expanded)
                     InkWell(
-                      onTap: () => print("edit"),
+                      onTap: () =>
+                          Navigator.of(context).pushNamed(EditUser.kRouteName),
                       child: Icon(
                         Icons.edit,
                         color: AppStyles.kPrimaryColor,
@@ -140,9 +149,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           backgroundImage: widget.user.profilePicture != null
                               ? MemoryImage(
                                   base64Decode(
-                                    String.fromCharCodes(
-                                      widget.user.profilePicture,
-                                    ).split("base64,")[1],
+                                    image,
                                   ),
                                 )
                               : null,
@@ -154,7 +161,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          onPressed: () {},
+                          onPressed: () => Navigator.of(context)
+                              .pushNamed(EditUser.kRouteName),
                           icon: Icon(Icons.edit),
                           label: Text("Modifica"),
                         ),

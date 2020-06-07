@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pizza/common/connectivity_abstract.dart';
 import 'package:pizza/common/persist_login_abstract.dart';
 import 'package:pizza/common/validate_text.dart';
 import 'package:pizza/common/widget/custom_input_text.dart';
@@ -24,6 +25,10 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     final double paddingTop = MediaQuery.of(context).padding.top;
 
+    if (Provider.of<ConnectivityStatus>(context) ==
+        ConnectivityStatus.NotConnected)
+      Navigator.of(context).pushReplacementNamed('network_error');
+
     return Scaffold(
       backgroundColor: AppStyles.kBackgroundColor,
       resizeToAvoidBottomInset: true,
@@ -32,7 +37,7 @@ class Login extends StatelessWidget {
           create: (_) => SwitchNotifier(),
           child: Form(
             key: _formKey,
-            autovalidate: true,
+            autovalidate: false,
             child: OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {
                 return orientation == Orientation.portrait

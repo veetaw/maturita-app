@@ -30,19 +30,6 @@ class ConnectionErrorScreen extends StatelessWidget {
             "Impossibile connettersi al server",
             style: Theme.of(context).textTheme.headline5,
           ),
-          FlatButton(
-            color: AppStyles.kPrimaryColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            onPressed: () async {},
-            textColor: Colors.white,
-            child: Container(
-              alignment: Alignment.center,
-              width: size.width - (kStandardPadding * 2),
-              child: Text("Rieffettua login"),
-            ),
-          ),
         ],
       ),
     );

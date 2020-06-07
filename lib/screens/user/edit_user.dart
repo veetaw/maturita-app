@@ -2,13 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pizza/common/encode_profile_picture.dart';
-import 'package:pizza/common/persist_login_abstract.dart';
 import 'package:pizza/common/validate_text.dart';
 import 'package:pizza/common/widget/circle_selector_avatar.dart';
 import 'package:pizza/common/widget/custom_input_text.dart';
 import 'package:pizza/screens/auth/common.dart';
-import 'package:pizza/screens/user/user_home.dart';
-import 'package:pizza/services/user_api.dart';
 import 'package:pizza/style/app_styles.dart';
 import 'package:provider/provider.dart';
 
@@ -21,8 +18,8 @@ final TextEditingController _addressController = TextEditingController();
 final TextEditingController _phoneController = TextEditingController();
 final TextEditingController _passwordController = TextEditingController();
 
-class RegisterUser extends StatelessWidget {
-  static const String kRouteName = 'login/register';
+class EditUser extends StatelessWidget {
+  static const String kRouteName = "userHome/edit";
 
   @override
   Widget build(BuildContext context) {
@@ -115,56 +112,12 @@ class RegisterUser extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         buildNextButton(
-          () {
-            error(_) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text("Registrazione non riuscita"),
-                ),
-              );
-            }
-
-            success(bool result) async {
-              String token = await UserApi().login(
-                email: _emailController.text,
-                password: _passwordController.text,
-              );
-              PersistLogin()
-                ..saveToken(token)
-                ..saveUserType('user');
-
-              if (result)
-                return Navigator.of(context).pushNamedAndRemoveUntil(
-                  UserHome.kRouteName,
-                  (_) => false,
-                );
-              else
-                return Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("Utente già registrato"),
-                  ),
-                );
-            }
-
-            if (_formKey.currentState.validate()) {
-              UserApi()
-                  .register(
-                    firstName: _firstNameController.text,
-                    lastName: _lastNameController.text,
-                    email: _emailController.text,
-                    address: _addressController.text,
-                    phone: _phoneController.text,
-                    password: _passwordController.text,
-                    profilePicture: Provider.of<ProfilePictureNotifier>(
-                      context,
-                      listen: false,
-                    ).image,
-                  )
-                  .then(success)
-                  .catchError(error);
-            }
+          () async {
+            _formKey.currentState.validate();
+            await Future.delayed(Duration(seconds: 1));
+            Navigator.of(context).pop();
           },
-          "Avanti",
+          "Modifica",
         ),
       ],
     );
@@ -178,7 +131,6 @@ class RegisterUser extends StatelessWidget {
         CustomInputText(
           controller: _firstNameController,
           labelText: "First name",
-          validator: validateText,
           prefixIcon: Icon(
             Icons.person,
             color: AppStyles.kPrimaryColor,
@@ -187,7 +139,6 @@ class RegisterUser extends StatelessWidget {
         CustomInputText(
           controller: _lastNameController,
           labelText: "Last name",
-          validator: validateText,
           prefixIcon: Icon(
             Icons.person,
             color: AppStyles.kPrimaryColor,
@@ -206,7 +157,6 @@ class RegisterUser extends StatelessWidget {
         CustomInputText(
           controller: _addressController,
           labelText: "address",
-          validator: validateText,
           prefixIcon: Icon(
             Icons.home,
             color: AppStyles.kPrimaryColor,
@@ -215,7 +165,6 @@ class RegisterUser extends StatelessWidget {
         CustomInputText(
           controller: _phoneController,
           labelText: "phone",
-          validator: validateText,
           keyboardType: TextInputType.phone,
           prefixIcon: Icon(
             Icons.phone,
@@ -232,14 +181,14 @@ class RegisterUser extends StatelessWidget {
   List<Widget> _buildTitle() {
     return [
       Text(
-        "Crea",
+        "Modifica",
         style: TextStyle(
           fontSize: 48,
           fontWeight: FontWeight.w200,
         ),
       ),
       Text(
-        'Account',
+        'Dati',
         style: TextStyle(
           fontSize: 48,
           fontWeight: FontWeight.w600,

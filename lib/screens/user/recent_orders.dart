@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:pizza/models/item.dart';
 import 'package:pizza/models/order.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:pizza/services/user_api.dart';
@@ -69,7 +72,69 @@ class _RecentOrdersState extends State<RecentOrders> {
                     ),
                   );
                 Order lastOrder = orders.first;
-                return Container();
+                Item lastItem = lastOrder.items.first;
+                return Container(
+                  decoration: BoxDecoration(
+                    color: AppStyles.kBackgroundColor,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  margin: EdgeInsets.only(top: kStandardPadding),
+                  padding: EdgeInsets.all(kStandardPadding / 2),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (lastItem.image == null)
+                        Icon(
+                          lastItem.type == ItemType.drink
+                              ? Icons.local_drink
+                              : Icons.local_pizza,
+                          size: 100,
+                          color: AppStyles.kPrimaryColor,
+                        ),
+                      if (lastItem.image != null)
+                        Image.memory(
+                          base64Decode(
+                            String.fromCharCodes(
+                              lastItem.image,
+                            ).split("base64,")[1],
+                          ),
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.fill,
+                        ),
+                      Padding(
+                        padding: EdgeInsets.only(left: kStandardPadding),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            lastItem.name,
+                            style:
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      color: AppStyles.kPrimaryColor,
+                                    ),
+                          ),
+                          Text(
+                            lastItem.price.toString() + '€',
+                            style:
+                                Theme.of(context).textTheme.bodyText2.copyWith(
+                                      color: AppStyles.kPrimaryColor,
+                                    ),
+                          ),
+                          Text(
+                            timeago.format(lastOrder.start),
+                            style:
+                                Theme.of(context).textTheme.bodyText2.copyWith(
+                                      color: AppStyles.kPrimaryColor,
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
           ),

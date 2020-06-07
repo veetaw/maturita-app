@@ -42,7 +42,9 @@ class Order extends HiveObject {
     shipped = json['shipped'];
     delivered = json['delivered'];
     total = json['total'].toDouble();
-    if (json['items'] != null) if (json['menu'] != null)
-      items = json['menu'].map((item) => Item.fromJson(item)).toList();
+    if (json['menu'] != null)
+      items = List<Item>.from((json['menu'].map((item) => Item.fromJson(item))));
+    if (json['items'] != null)
+      items = List<Item>.from((json['items'].map((item) => Item.fromJson(item))));
   }
 }

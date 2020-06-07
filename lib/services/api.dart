@@ -1,3 +1,4 @@
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
@@ -6,13 +7,12 @@ import 'package:pizza/constants.dart';
 
 class PizzaApi {
   static const String baseUrl = kApiBaseUrl;
-  final Dio dio = Dio();
-  // todo cache
-  // ..interceptors.add(
-  //     DioCacheManager(
-  //       CacheConfig(baseUrl: baseUrl),
-  //     ).interceptor,
-  //   );
+  final Dio dio = Dio()
+    ..interceptors.add(
+      DioCacheManager(
+        CacheConfig(baseUrl: baseUrl),
+      ).interceptor,
+    );
 
   Future<Response> get({
     @required String path,

@@ -14,7 +14,6 @@ import 'package:pizza/models/owner.dart';
 import 'package:pizza/models/pizzeria.dart';
 import 'package:pizza/models/user.dart';
 import 'package:pizza/screens/auth/login.dart';
-import 'package:pizza/screens/common/errors/connection_error_screen.dart';
 import 'package:pizza/screens/owner/owner_home.dart';
 import 'package:pizza/screens/user/user_home.dart';
 import 'package:provider/provider.dart';
@@ -38,9 +37,6 @@ void main() async {
 
   loggedIn = await persistLogin.isLoggedIn();
   user = await persistLogin.isUser();
-  // TODO: debug
-  // loggedIn = false;
-  // user = null;
 
   runApp(
     App(
@@ -65,31 +61,11 @@ class App extends StatelessWidget {
     return StreamProvider<ConnectivityStatus>(
       create: (context) =>
           ConnectivityService().connectionStatusController.stream,
-      child: Builder(
-        builder: (context) {
-          // TODO
-          // if (status == null) {
-          //   return MaterialApp(
-          //     home: Scaffold(
-          //       body: Center(
-          //         child: CircularProgressIndicator(),
-          //       ),
-          //     ),
-          //   );
-          // }
-          // if (status == ConnectivityStatus.NotConnected)
-          //   return MaterialApp(
-          //     home: Scaffold(
-          //       body: ConnectionErrorScreen(),
-          //     ),
-          //   );
-          return MaterialApp(
-            initialRoute: loggedIn
-                ? (isUser ? UserHome.kRouteName : OwnerHome.kRouteName)
-                : Login.kRouteName,
-            onGenerateRoute: onGenerateRoute,
-          );
-        },
+      child: MaterialApp(
+        initialRoute: loggedIn
+            ? (isUser ? UserHome.kRouteName : OwnerHome.kRouteName)
+            : Login.kRouteName,
+        onGenerateRoute: onGenerateRoute,
       ),
     );
   }
