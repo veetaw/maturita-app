@@ -168,7 +168,7 @@ class CreatePizzeria extends StatelessWidget {
             ),
           ),
           CustomInputText(
-            labelText: "address",
+            labelText: "Indirizzo",
             validator: validateText,
             controller: _addressController,
             prefixIcon: Icon(
@@ -177,7 +177,7 @@ class CreatePizzeria extends StatelessWidget {
             ),
           ),
           CustomInputText(
-            labelText: "phone",
+            labelText: "Telefono",
             validator: validateText,
             controller: _phoneController,
             keyboardType: TextInputType.phone,
@@ -189,7 +189,7 @@ class CreatePizzeria extends StatelessWidget {
           CustomInputText(
             controller: _emailController,
             validator: validateEmail,
-            labelText: "email",
+            labelText: "Email",
             keyboardType: TextInputType.emailAddress,
             prefixIcon: Icon(
               Icons.email,

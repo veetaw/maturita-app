@@ -174,7 +174,7 @@ class RegisterOwner extends StatelessWidget {
       children: [
         CustomInputText(
           controller: _firstNameController,
-          labelText: "First name",
+          labelText: "Nome",
           validator: validateText,
           prefixIcon: Icon(
             Icons.person,
@@ -183,7 +183,7 @@ class RegisterOwner extends StatelessWidget {
         ),
         CustomInputText(
           controller: _lastNameController,
-          labelText: "Last name",
+          labelText: "Cognome",
           validator: validateText,
           prefixIcon: Icon(
             Icons.person,
@@ -192,7 +192,7 @@ class RegisterOwner extends StatelessWidget {
         ),
         CustomInputText(
           controller: _emailController,
-          labelText: "email",
+          labelText: "Email",
           validator: validateEmail,
           keyboardType: TextInputType.emailAddress,
           prefixIcon: Icon(

@@ -3,7 +3,6 @@ import 'package:pizza/common/connectivity_abstract.dart';
 import 'package:pizza/common/persist_login_abstract.dart';
 import 'package:pizza/models/user.dart';
 import 'package:pizza/screens/common/errors/access_error_screen.dart';
-import 'package:pizza/screens/common/errors/connection_error_screen.dart';
 import 'package:pizza/screens/common/loading_screen.dart';
 import 'package:pizza/screens/user/app_bar.dart';
 import 'package:pizza/screens/user/recent_orders.dart';

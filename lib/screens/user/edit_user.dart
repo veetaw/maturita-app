@@ -130,7 +130,7 @@ class EditUser extends StatelessWidget {
       children: [
         CustomInputText(
           controller: _firstNameController,
-          labelText: "First name",
+          labelText: "Nome",
           prefixIcon: Icon(
             Icons.person,
             color: AppStyles.kPrimaryColor,
@@ -138,7 +138,7 @@ class EditUser extends StatelessWidget {
         ),
         CustomInputText(
           controller: _lastNameController,
-          labelText: "Last name",
+          labelText: "Cognome",
           prefixIcon: Icon(
             Icons.person,
             color: AppStyles.kPrimaryColor,
@@ -146,7 +146,7 @@ class EditUser extends StatelessWidget {
         ),
         CustomInputText(
           controller: _emailController,
-          labelText: "email",
+          labelText: "Email",
           validator: validateEmail,
           keyboardType: TextInputType.emailAddress,
           prefixIcon: Icon(
@@ -156,7 +156,7 @@ class EditUser extends StatelessWidget {
         ),
         CustomInputText(
           controller: _addressController,
-          labelText: "address",
+          labelText: "Indirizzo",
           prefixIcon: Icon(
             Icons.home,
             color: AppStyles.kPrimaryColor,
@@ -164,7 +164,7 @@ class EditUser extends StatelessWidget {
         ),
         CustomInputText(
           controller: _phoneController,
-          labelText: "phone",
+          labelText: "Telefono",
           keyboardType: TextInputType.phone,
           prefixIcon: Icon(
             Icons.phone,
