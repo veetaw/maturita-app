@@ -5,6 +5,7 @@ import 'package:pizza/models/user.dart';
 import 'package:pizza/screens/common/errors/access_error_screen.dart';
 import 'package:pizza/screens/common/loading_screen.dart';
 import 'package:pizza/screens/user/app_bar.dart';
+import 'package:pizza/screens/user/bottom_app_bar.dart';
 import 'package:pizza/screens/user/recent_orders.dart';
 import 'package:pizza/services/user_api.dart';
 import 'package:pizza/style/app_styles.dart';
@@ -65,6 +66,7 @@ class _UserHomeState extends State<UserHome> {
           );
         },
       ),
+      bottomNavigationBar: CustomBottomAppBar(),
     );
   }
 }

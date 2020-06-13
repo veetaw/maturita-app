@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:pizza/models/pizzeria.dart';
 import 'package:pizza/screens/common/errors/connection_error_screen.dart';
 import 'package:pizza/screens/owner/owner_home.dart';
 
 import 'package:pizza/screens/auth/auth.dart';
 import 'package:pizza/screens/user/edit_user.dart';
 import 'package:pizza/screens/user/user_home.dart';
+import 'package:pizza/screens/user/view_pizzeria.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   return MaterialPageRoute(
@@ -38,6 +40,9 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
           );
         case EditUser.kRouteName:
           return EditUser();
+        case ViewPizzeria.kRouteName:
+          Pizzeria pizzeria = settings.arguments;
+          return ViewPizzeria(pizzeria: pizzeria);
         default:
           return Scaffold(body: Text('unknown route'));
       }
