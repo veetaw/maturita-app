@@ -5,7 +5,9 @@ const bool kIsDebug = true;
 // TODO: prod API url
 const String kApiBaseUrl = kIsWeb
     ? 'http://localhost:8080/api'
-    : (kIsDebug ? 'http://vitp.wtf/api' : 'http://vitp.wtf/api');
+    : (kIsDebug
+        ? 'http://api.pizza.vitp.wtf/api'
+        : 'http://api.pizza.vitp.wtf/api');
 
 // persist_login.dart
 const String kTokenKey = 'token';
