@@ -507,8 +507,8 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
       label: routeName,
       child: Scaffold(
         backgroundColor: AppStyles.kDividerColor,
-        resizeToAvoidBottomInset: false,
-        resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomPadding: true,
         appBar: AppBar(
           backgroundColor: AppStyles.kDividerColor,
           elevation: 0,

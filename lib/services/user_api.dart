@@ -71,7 +71,7 @@ class UserApi extends PizzaApi {
   }) async {
     const path = '/user/pizzeria';
     return Pizzeria.fromJson(
-      (await super.get(path: path, parameters: {'id': id})).data,
+      (await super.get(path: path, parameters: {'id': id})).data['pizzeria'],
     );
   }
 
